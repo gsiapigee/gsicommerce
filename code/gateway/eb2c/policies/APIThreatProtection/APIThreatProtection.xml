@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sci:PolicySet xmlns:editor="http://www.sonoasystems.com/schemas/2007/8/3/ui/policy/editor/" xmlns:sci="http://www.sonoasystems.com/schemas/2007/8/3/sci/" xmlns:template="http://www.sonoasystems.com/schemas/2007/8/3/ui/policy/template/" name="APIThreatProtection">
+  <sci:Description></sci:Description>
+  <sci:Metadata>
+    <template:UIMetadata>
+      <template:TemplateIdentifier category="Security" displayName="API Threat Protection" editor="GenericEditor" ignoreForDomain="true" majorVersion="3" name="APIThreatProtection" onlyForDomain="false" subcategory="Threat Detection" version="1"/>
+    </template:UIMetadata>
+    <editor:Parameters>
+      <editor:Parameter name="MaliciousCodeInjectionProtection" value="true"/>
+      <editor:Parameter name="DOSAttackProtection" value="true"/>
+      <editor:Parameter name="MaxXMLTextLength" value="16000"/>
+      <editor:Parameter name="MaxXMLNodeNameLength" value="512"/>
+      <editor:Parameter name="MaxXMLNodeDepth" value="512"/>
+      <editor:Parameter name="MaxXMLSiblingNodes" value="512"/>
+      <editor:Parameter name="SpikeArresting" value="false"/>
+      <editor:Parameter name="MaxRequestCount" value="20"/>
+      <editor:Parameter name="CountRate" value="$CountRate"/>
+      <editor:Parameter name="SystemError" value="true"/>
+      <editor:Parameter name="CustomError" value="false"/>
+    </editor:Parameters>
+  </sci:Metadata>
+  <sci:Policy name="MaliciousCodeInjectionProtection">
+    <sci:EnforcementPoint>ClientRequest-System</sci:EnforcementPoint>
+    <sci:MessageVariables>
+      <sci:MessageXPath name="allPartsXPath" type="string" xpathwhere="raw">
+        <sci:XPath>//*/text()</sci:XPath>
+      </sci:MessageXPath>
+    </sci:MessageVariables>
+    <sci:RegularExpressionMatch name="MaliciousCodeInjectionProtection" caseInsensitive="true">
+      <sci:Patterns sourceXPathRef="allPartsXPath">
+        <sci:Pattern>[\s]*((delete)|(exec)|(drop\s*table)|(insert)|(shutdown)|(update)|(or))</sci:Pattern>
+        <sci:Pattern>&lt;!--\s*&lt;!--(include|exec|echo|config|printenv)\s+.*</sci:Pattern>
+        <sci:Pattern>(/(@?[\w_?\w:\*]+(\[[^]]+\])*)?)+</sci:Pattern>
+        <sci:Pattern>/?(ancestor(-or-self)?|descendant(-or-self)?|following(-sibling))</sci:Pattern>
+        <sci:Pattern>&lt;\s*script\b[^>]*>[^&lt;]+&lt;\s*/\s*script\s*></sci:Pattern>
+        <sci:Pattern>.*Exception in thread.*</sci:Pattern>
+      </sci:Patterns>
+    </sci:RegularExpressionMatch>
+  </sci:Policy>
+  <sci:Policy name="DOSAttackProtection">
+    <sci:EnforcementPoint>ClientRequest-System</sci:EnforcementPoint>
+    <sci:XMLMessageProtection name="XMLMessageProtection">
+      <sci:Structural>
+        <sci:ParseLimit>
+          <sci:MaxNodeDepth>512</sci:MaxNodeDepth>
+          <sci:MaxAttributesPerElement>512</sci:MaxAttributesPerElement>
+          <sci:MaxNamespacesPerElement>512</sci:MaxNamespacesPerElement>
+          <sci:MaxSiblingNodes>512</sci:MaxSiblingNodes>
+          <sci:LimitPayloadSize>
+            <sci:ContentText>16000</sci:ContentText>
+            <sci:AttributeValue>16000</sci:AttributeValue>
+            <sci:Comment>16000</sci:Comment>
+            <sci:CData>16000</sci:CData>
+            <sci:ProcessingInstruction>16000</sci:ProcessingInstruction>
+          </sci:LimitPayloadSize>
+          <sci:LimitNameLength>
+            <sci:Element>512</sci:Element>
+            <sci:Attribute>512</sci:Attribute>
+            <sci:NamespacePrefix>512</sci:NamespacePrefix>
+            <sci:ProcessingInstructionTarget>512</sci:ProcessingInstructionTarget>
+          </sci:LimitNameLength>
+        </sci:ParseLimit>
+      </sci:Structural>
+    </sci:XMLMessageProtection>
+  </sci:Policy>
+</sci:PolicySet>

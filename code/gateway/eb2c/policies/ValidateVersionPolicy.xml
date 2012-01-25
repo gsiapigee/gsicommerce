@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sci:Policy xmlns:http="http://www.sonoasystems.com/schemas/2007/8/3/http/" xmlns:sci="http://www.sonoasystems.com/schemas/2007/8/3/sci/" name="ValidateVersionPolicy">
+  <sci:MessageVariables>
+    <sci:MessageXPathGroup name="__system_generated__FetchKMSStoresMap">
+      <sci:MessageXPath name="X-gsi-allowed-header" type="string" xpathwhere="raw">
+        <sci:NamespaceGroupRef ref="standard.namespaces"/>
+        <sci:XPath>/map/entry/value</sci:XPath>
+      </sci:MessageXPath>
+      <sci:MessageXPath name="X-Version" type="string" xpathwhere="raw">
+        <sci:NamespaceGroupRef ref="standard.namespaces"/>
+        <sci:XPath>/map/entry/value1</sci:XPath>
+      </sci:MessageXPath>
+      <sci:MessageXPath name="X-Uri-Allowed" type="string" xpathwhere="raw">
+        <sci:XPath>/map/entry/value2</sci:XPath>
+      </sci:MessageXPath>
+    </sci:MessageXPathGroup>
+  </sci:MessageVariables>
+  <sci:FlowVariables>
+    <sci:Variable name="version" scope="global" type="string" value=""/>
+  </sci:FlowVariables>
+  <sci:Conditions>
+    <sci:EqualsCondition name="versionMatched" operand1="_flow.msgvar.version" operand2="version"/>
+    <sci:NotCondition name="VersionMismatch" operand1="versionMatched"/>
+  </sci:Conditions>
+  <sci:ServiceCallout name="FetchKMSStoresMap">
+    <sci:Endpoint type="rest">
+      <http:TargetAddress>
+        <http:Local>
+          <http:ApplicationRef>KMSAPIProxy</http:ApplicationRef>
+          <http:ServiceRef>KeyManagementService</http:ServiceRef>
+          <http:ClientEndpointRef>KeyManagementService_client</http:ClientEndpointRef>
+          <http:PathParameters>/map/entry/attributes</http:PathParameters>
+        </http:Local>
+        <http:TransportBinding>
+          <http:AllowHttp10>true</http:AllowHttp10>
+          <http:AllowHttp11>true</http:AllowHttp11>
+          <http:KeepAliveConnections>true</http:KeepAliveConnections>
+          <http:RetainHeaders>true</http:RetainHeaders>
+          <http:RetainQueryParams>true</http:RetainQueryParams>
+          <http:Compression/>
+          <http:Decompression enabled="true"/>
+        </http:TransportBinding>
+      </http:TargetAddress>
+      <sci:Metadata/>
+    </sci:Endpoint>
+    <sci:Request>
+      <sci:Payload/>
+      <sci:Assign sourceval="GET" type="verb"/>
+      <sci:Assign sourceref="key" targetval="key" type="queryparam"/>
+      <sci:Assign sourceval="storesMap" targetval="map_name" type="queryparam"/>
+    </sci:Request>
+    <sci:Response>
+      <sci:Evaluate messageXPathGroupRef="__system_generated__FetchKMSStoresMap"/>
+      <sci:Extract sourceref="X-Version" targetref="version" type="var"/>
+      <sci:Extract sourceref="X-gsi-allowed-header" targetref="gsi-allowed-stores" type="var"/>
+      <sci:Extract sourceref="X-Uri-Allowed" targetref="allowed-uri" type="var"/>
+    </sci:Response>
+  </sci:ServiceCallout>
+  <sci:RaiseFault name="raiseFaultVersionMismatch">
+    <sci:ConditionRef ref="VersionMismatch"/>
+  </sci:RaiseFault>
+  <sci:FaultHandling>
+    <sci:Fault faultName="raiseFaultVersionMismatch">
+      <sci:AssignPayload name="assignPayload1">
+        <sci:CustomPayload autogen-envelopes="false">
+          <sci:GenericPayloadAttributes>
+            <sci:ContentType>application/xml</sci:ContentType>
+            <sci:ResponseCode>403</sci:ResponseCode>
+          </sci:GenericPayloadAttributes>
+          <sci:Template>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>
+&lt;fault>
+	&lt;code>403&lt;/code>
+	&lt;message>Forbidden Path&lt;/message>
+&lt;/fault></sci:Template>
+        </sci:CustomPayload>
+      </sci:AssignPayload>
+    </sci:Fault>
+  </sci:FaultHandling>
+</sci:Policy>

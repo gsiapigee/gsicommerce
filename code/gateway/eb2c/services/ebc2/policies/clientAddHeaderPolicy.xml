@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sci:Policy xmlns:sci="http://www.sonoasystems.com/schemas/2007/8/3/sci/" name="clientAddHeaderPolicy">
+  <sci:ProtocolTransformation name="protocolTransformation1">
+    <sci:HeaderTransforms>
+      <sci:Delete name="gsi-allowed-stores"/>
+      <sci:Add name="gsi-allowed-stores" ref="gsi-allowed-stores"/>
+    </sci:HeaderTransforms>
+    <sci:QueryParamTransforms/>
+  </sci:ProtocolTransformation>
+</sci:Policy>

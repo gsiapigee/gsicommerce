@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://api.gsicommerce.com/schema/checkout/1.0" targetNamespace="http://api.gsicommerce.com/schema/checkout/1.0"
+    elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <xsd:include schemaLocation="Inventory-Datatypes-1.0.xsd" />
+
+  <xsd:complexType name="RollbackAllocationRequestMessage">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="en">
+      <p>
+      The rollback allocation API is meant to be used to cancel the inventory 
+      reservation created by an allocation call if an unrecoverable run-time or 
+      business error occurs in the submit order processing after the allocation 
+      call and before the EB2C order create call is made.
+      </p>
+      <p>
+      This type defines the syntax of an EB2C inventory rollback allocation 
+      request message.  This request consists of a globally unique request 
+      identifier provided by the EB2C service consumer which is used for duplicate
+      request detection and the identifier of the reservation being rolled back.
+      </p>
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="requestId" type="RequestId" use="required">
+      <xsd:annotation>
+        <xsd:documentation xml:lang="en">
+          requestId is a globally unique string provided by the eb2c application
+          which identifies the request.  This value is used by eb2c inventory 
+          to ensure that this operation behaves in a safe and idempotent 
+          manner.
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="reservationId" type="ReservationId" use="required" />
+  </xsd:complexType>
+
+  <xsd:element name="RollbackAllocationRequestMessage"
+               type="RollbackAllocationRequestMessage"
+               nillable="false"/>
+
+  <xsd:complexType name="RollbackAllocationResponseMessage">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="en">
+      This type defines the syntax of an EB2C inventory rollback allocation
+      response message.  The resopnse message contains the identifier of the
+      rolled-back reservation.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="reservationId" type="ReservationId" use="required"/>
+  </xsd:complexType>
+
+  <xsd:element name="RollbackAllocationResponseMessage" 
+               type="RollbackAllocationResponseMessage"
+               nillable="false"/>
+
+</xsd:schema>

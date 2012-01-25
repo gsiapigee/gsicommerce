@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sci:Service xmlns:http_1="http://www.sonoasystems.com/schemas/2007/8/3/http/" xmlns:sci="http://www.sonoasystems.com/schemas/2007/8/3/sci/" name="ebc2">
+  <sci:MessageVariables>
+    <sci:MessageXPath name="AddressValidationRequest" type="string" xpathwhere="raw">
+      <sci:XPath>/AddressValidationRequest</sci:XPath>
+    </sci:MessageXPath>
+  </sci:MessageVariables>
+  <sci:Binding name="address_target_Binding" type="http://schemas.xmlsoap.org/wsdl/http/">
+    <http:binding xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" verb="POST"/>
+    <sci:Operation name="Validation_target_op">
+      <http_1:operation location="/${_flow.msgvar.version}/stores/${_flow.msgvar.clientId}/address/validate.${_flow.msgvar.format}${_flow.client.request.pathsuffix}${_flow.client.request.queryparam2}" verb="POST"/>
+    </sci:Operation>
+    <sci:Operation name="quote_target_op">
+      <http_1:operation location="/${_flow.msgvar.version}/stores/${_flow.msgvar.clientId}/taxes/quote.${_flow.msgvar.format}${_flow.client.request.pathsuffix}${_flow.client.request.queryparam2}" verb="POST"/>
+    </sci:Operation>
+  </sci:Binding>
+  <sci:Binding name="address_client_Binding" type="http://schemas.xmlsoap.org/wsdl/http/">
+    <http:binding xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" verb="POST"/>
+    <sci:Operation name="Validation_client_op">
+      <http_1:operation location="/{version}/stores/{clientId}/address/validate.{format}" verb="POST"/>
+    </sci:Operation>
+    <sci:Operation name="quote_client_op">
+      <http_1:operation location="/{version}/stores/{clientId}/taxes/quote.{format}" verb="POST"/>
+    </sci:Operation>
+  </sci:Binding>
+  <sci:ClientEndpoint binding="address_client_Binding" name="ebc2_client">
+    <sci:MessageStatistics>enabled</sci:MessageStatistics>
+    <sci:PolicyStatistics>enabled</sci:PolicyStatistics>
+    <sci:PolicyAttachments>
+      <sci:PolicyAttachment enforcementPoint="ClientResponse-System" policyName="Auditing"/>
+      <sci:PolicyAttachment enforcementPoint="ClientResponse-System" policyName="XML2JSON"/>
+      <sci:PolicyAttachment enforcementPoint="ClientRequest-User" policyName="ValidateClientPolicy"/>
+    </sci:PolicyAttachments>
+    <http_1:ClientAddress>
+      <http_1:VirtualHost ref="VirtualHost_80"/>
+      <http_1:Path>/</http_1:Path>
+      <http_1:TransportBinding>
+        <http_1:AllowHttp10>true</http_1:AllowHttp10>
+        <http_1:AllowHttp11>true</http_1:AllowHttp11>
+        <http_1:KeepAliveConnections>true</http_1:KeepAliveConnections>
+        <http_1:RetainHeaders>true</http_1:RetainHeaders>
+        <http_1:Decompression enabled="true"/>
+      </http_1:TransportBinding>
+    </http_1:ClientAddress>
+    <sci:Operation mep="http://www.w3.org/2006/01/wsdl/in-out" name="Validation_client_op">
+      <http_1:ClassificationMethod>
+        <http_1:Location/>
+      </http_1:ClassificationMethod>
+      <sci:MessageStatistics>enabled</sci:MessageStatistics>
+      <sci:PolicyStatistics>enabled</sci:PolicyStatistics>
+      <sci:PolicyAttachments>
+        <sci:PolicyAttachment enforcementPoint="ClientRequest-User" policyName="EvaluateRequestPolicy"/>
+      </sci:PolicyAttachments>
+      <sci:Route>
+        <sci:TargetEndpointRef ref="ebc2_target" operation="Validation_target_op"/>
+      </sci:Route>
+    </sci:Operation>
+    <sci:Operation mep="http://www.w3.org/2006/01/wsdl/in-out" name="quote_client_op">
+      <http_1:ClassificationMethod>
+        <http_1:Location/>
+      </http_1:ClassificationMethod>
+      <sci:MessageStatistics>enabled</sci:MessageStatistics>
+      <sci:PolicyStatistics>enabled</sci:PolicyStatistics>
+      <sci:Route>
+        <sci:TargetEndpointRef ref="ebc2_target" operation="quote_target_op"/>
+      </sci:Route>
+    </sci:Operation>
+  </sci:ClientEndpoint>
+  <sci:TargetEndpoint binding="address_target_Binding" name="ebc2_target">
+    <sci:MessageStatistics>enabled</sci:MessageStatistics>
+    <sci:PolicyStatistics>enabled</sci:PolicyStatistics>
+    <sci:PolicyAttachments/>
+    <http_1:TargetAddress>
+      <http_1:URI>http://172.21.241.12:1401/public-api-service</http_1:URI>
+      <http_1:TransportBinding>
+        <http_1:AllowHttp10>true</http_1:AllowHttp10>
+        <http_1:AllowHttp11>true</http_1:AllowHttp11>
+        <http_1:KeepAliveConnections>true</http_1:KeepAliveConnections>
+        <http_1:DenyHttpMethods>
+          <http_1:HttpMethod>GET</http_1:HttpMethod>
+          <http_1:HttpMethod>DELETE</http_1:HttpMethod>
+          <http_1:HttpMethod>PUT</http_1:HttpMethod>
+          <http_1:HttpMethod>HEAD</http_1:HttpMethod>
+          <http_1:HttpMethod>OPTIONS</http_1:HttpMethod>
+          <http_1:HttpMethod>CONNECT</http_1:HttpMethod>
+          <http_1:HttpMethod>TRACE</http_1:HttpMethod>
+        </http_1:DenyHttpMethods>
+        <http_1:RetainHeaders>true</http_1:RetainHeaders>
+        <http_1:RetainQueryParams>true</http_1:RetainQueryParams>
+        <http_1:Decompression enabled="true"/>
+      </http_1:TransportBinding>
+    </http_1:TargetAddress>
+    <sci:Operation mep="http://www.w3.org/2006/01/wsdl/in-out" name="Validation_target_op">
+      <sci:MessageStatistics>enabled</sci:MessageStatistics>
+      <sci:PolicyStatistics>enabled</sci:PolicyStatistics>
+      <sci:PolicyAttachments>
+        <sci:PolicyAttachment enforcementPoint="TargetRequest-User" policyName="clientAddHeaderPolicy"/>
+      </sci:PolicyAttachments>
+    </sci:Operation>
+    <sci:Operation mep="http://www.w3.org/2006/01/wsdl/in-out" name="quote_target_op">
+      <sci:MessageStatistics>enabled</sci:MessageStatistics>
+      <sci:PolicyStatistics>enabled</sci:PolicyStatistics>
+      <sci:PolicyAttachments>
+        <sci:PolicyAttachment enforcementPoint="TargetRequest-User" policyName="clientAddHeaderPolicy"/>
+      </sci:PolicyAttachments>
+    </sci:Operation>
+  </sci:TargetEndpoint>
+</sci:Service>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sci:MessageTemplates
+	xmlns:sci="http://www.sonoasystems.com/schemas/2007/8/3/sci/">
+	<sci:MessageTemplate name="TestMessageTemplate">
+		<sci:messagepart>
+			<Message>This is a test message,name=${name}</Message>
+		</sci:messagepart>
+	</sci:MessageTemplate>
+	<sci:MessageTemplate name="fault.soap11message">
+		<sci:messagepart>
+			<soap11env:Envelope
+				xmlns:soap11env="http://schemas.xmlsoap.org/soap/envelope/">
+				<soap11env:Body>
+					<soap11env:Fault>
+						<soap11env:Code>
+							<soap11env:Value>soap11env:Server</soap11env:Value>
+						</soap11env:Code>
+						<soap11env:Reason>${custommessage}</soap11env:Reason>
+					</soap11env:Fault>
+				</soap11env:Body>
+			</soap11env:Envelope>
+		</sci:messagepart>
+	</sci:MessageTemplate>
+	<sci:MessageTemplate name="fault.soap12message">
+		<sci:messagepart>
+			<soap12env:Envelope xmlns:soap12env="http://www.w3.org/2003/05/soap-envelope">
+				<soap12env:Body>
+					<soap12env:Fault>
+						<soap12env:Code>
+							<soap12env:Value>soap12env:Receiver</soap12env:Value>
+						</soap12env:Code>
+						<soap12env:Reason>${custommessage}</soap12env:Reason>
+					</soap12env:Fault>
+				</soap12env:Body>
+			</soap12env:Envelope>
+		</sci:messagepart>
+	</sci:MessageTemplate>
+	<sci:MessageTemplate name="fault.htmlmessage">
+		<sci:messagepart>
+			<html>
+				<body>
+					<p>${custommessage}</p>
+				</body>
+			</html>
+		</sci:messagepart>
+	</sci:MessageTemplate>
+	<sci:MessageTemplate name="simple.message">
+		<sci:messagepart>${custommessage}</sci:messagepart>
+	</sci:MessageTemplate>
+	<sci:MessageTemplate name="fault.message">
+		<sci:messagepart>
+			<fault>
+				<reason>${custommessage}</reason>
+			</fault>
+		</sci:messagepart>
+	</sci:MessageTemplate>
+	<sci:MessageTemplate name="html.message">
+		<sci:messagepart>
+			<html>
+				<body>
+					<p>${custommessage}</p>
+				</body>
+			</html>
+		</sci:messagepart>
+	</sci:MessageTemplate>
+</sci:MessageTemplates>

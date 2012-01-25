@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sci:Policy xmlns:editor="http://www.sonoasystems.com/schemas/2007/8/3/ui/policy/editor/" xmlns:sci="http://www.sonoasystems.com/schemas/2007/8/3/sci/" xmlns:template="http://www.sonoasystems.com/schemas/2007/8/3/ui/policy/template/" name="Auditing">
+  <sci:Metadata>
+    <template:UIMetadata>
+      <template:TemplateIdentifier category="Security" displayName="Auditing" editor="GenericEditor" ignoreForDomain="true" majorVersion="3" name="Auditing" onlyForDomain="false" subcategory="Auditing" version="1"/>
+    </template:UIMetadata>
+    <editor:Parameters>
+      <editor:Parameter name="DateAndTime" value="true"/>
+      <editor:Parameter name="UserIdentity" value="true"/>
+      <editor:Parameter name="ClientIP" value="true"/>
+      <editor:Parameter name="Message" value="0"/>
+      <editor:Parameter name="LocalFile" value="true"/>
+    </editor:Parameters>
+  </sci:Metadata>
+  <sci:EnforcementPoint>ClientResponse-System</sci:EnforcementPoint>
+  <sci:MessageVariables/>
+  <sci:MessageLogging name="MessageLogging">
+    <sci:Parameter name="${year}" ref="_systemvar.time.year"/>
+    <sci:Parameter name="${month}" ref="_systemvar.time.month"/>
+    <sci:Parameter name="${day}" ref="_systemvar.time.day"/>
+    <sci:Parameter name="${hour}" ref="_systemvar.time.hour"/>
+    <sci:Parameter name="${minute}" ref="_systemvar.time.minute"/>
+    <sci:Parameter name="${second}" ref="_systemvar.time.second"/>
+    <sci:Parameter name="${userIdentity}" ref="_flow.subject.username"/>
+    <sci:Parameter name="${clientIP}" ref="_flow.clientip"/>
+    <sci:Parameter name="${requestMethod}" ref="_flow.client.request.verb"/>
+    <sci:Parameter name="${status}" ref="_flow.responsecode"/>
+    <sci:Parameter name="${message}" ref="_flow.message"/>
+    <sci:LocalFileDestination name="localFileLogDestination" rotateLogFileOnStartup="true" logMode="SYNC">
+      <sci:MaxBufferSizeInKBytes>256</sci:MaxBufferSizeInKBytes>
+      <sci:MessageTemplate delimiter="\n">${year}-${month}-${day},${hour}:${minute}:${second},${clientIP},${requestMethod},${userIdentity},${status},${message};</sci:MessageTemplate>
+      <sci:LogFileName>Auditing_local.log</sci:LogFileName>
+      <sci:LogFileRotationType>TIME_SIZE</sci:LogFileRotationType>
+      <sci:RotationFrequency>Day</sci:RotationFrequency>
+      <sci:MaxFileSizeInMBytes>10</sci:MaxFileSizeInMBytes>
+      <sci:LimitNumberOfRetainedFiles>true</sci:LimitNumberOfRetainedFiles>
+      <sci:MaxFilesToRetain>10</sci:MaxFilesToRetain>
+    </sci:LocalFileDestination>
+  </sci:MessageLogging>
+</sci:Policy>

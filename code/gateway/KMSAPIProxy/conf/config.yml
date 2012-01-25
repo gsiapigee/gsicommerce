@@ -1,0 +1,17 @@
+dev:
+  description: Dev box  Automation
+  target_endpoints:
+     KMSTarget:
+       uri: http://172.21.241.218:8080
+
+qa:
+  description: Prod box  Automation
+  target_endpoints:
+     KMSTarget:
+       uri: http://46.137.86.56:8080
+
+apigee:
+  description: Apigee Cloud
+  target_endpoints:
+     KMSTarget:
+       uri: http://107.22.11.205:8081

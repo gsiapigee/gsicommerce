@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sci:Policy xmlns:sci="http://www.sonoasystems.com/schemas/2007/8/3/sci/" name="ValidateClientPolicy">
+  <sci:FlowVariables>
+    <sci:Variable name="match" scope="global" type="boolean" value="false"/>
+    <sci:Variable name="index" scope="global" type="integer" value="0"/>
+  </sci:FlowVariables>
+  <sci:Conditions>
+    <sci:EqualsCondition name="uristoresNotFound" operand1="index" operand2Value="-1"/>
+  </sci:Conditions>
+  <sci:Script name="MatchUriStores" scriptType="python">
+    <sci:Location>script://MatchUriStores.py</sci:Location>
+  </sci:Script>
+  <sci:RaiseFault name="raiseFaultClientIdLoginIdMismatch">
+    <sci:ConditionRef ref="uristoresNotFound"/>
+  </sci:RaiseFault>
+  <sci:FaultHandling>
+    <sci:Fault faultName="raiseFaultClientIdLoginIdMismatch">
+      <sci:AssignPayload name="assignPayload1">
+        <sci:CustomPayload autogen-envelopes="false">
+          <sci:GenericPayloadAttributes>
+            <sci:ContentType>application/xml</sci:ContentType>
+            <sci:ResponseCode>403</sci:ResponseCode>
+          </sci:GenericPayloadAttributes>
+          <sci:Template>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>
+&lt;fault>
+	&lt;code>403&lt;/code>
+	&lt;message>Forbidden Path&lt;/message>
+&lt;/fault></sci:Template>
+        </sci:CustomPayload>
+      </sci:AssignPayload>
+    </sci:Fault>
+  </sci:FaultHandling>
+</sci:Policy>

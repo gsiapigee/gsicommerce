@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generated using Flame-Ware Solutions XML-2-XSD v2.0 at http://www.flame-ware.com/Products/XML-2-XSD/ -->
+<xs:schema xmlns="http://api.gsicommerce.com/schema/checkout/1.0" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:mstns="http://api.gsicommerce.com/schema/checkout/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" id="AddressValidationRequest" targetNamespace="http://api.gsicommerce.com/schema/checkout/1.0">
+  <xs:element msdata:IsDataSet="true" msdata:UseCurrentLocale="true" name="AddressValidationRequest">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:element name="Header">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="MaxAddressSuggestions" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Address">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="1" name="Line1" type="xs:string"/>
+              <xs:element minOccurs="1" name="Line2" type="xs:string"/>
+              <xs:element minOccurs="1" name="Line3" type="xs:string"/>
+              <xs:element minOccurs="1" name="Line4" type="xs:string"/>
+              <xs:element minOccurs="1" name="City" type="xs:string"/>
+              <xs:element minOccurs="1" name="MainDivision" type="xs:string"/>
+              <xs:element minOccurs="1" name="CountryCode" type="xs:string"/>
+              <xs:element minOccurs="1" name="PostalCode" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

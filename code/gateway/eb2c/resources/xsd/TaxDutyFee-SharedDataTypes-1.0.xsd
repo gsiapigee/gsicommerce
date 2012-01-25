@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://api.gsicommerce.com/schema/checkout/1.0" targetNamespace="http://api.gsicommerce.com/schema/checkout/1.0"
+           elementFormDefault="qualified" attributeFormDefault="unqualified"
+           xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <xsd:include schemaLocation="Checkout-Datatypes-1.0.xsd" />
+
+    <xsd:complexType name="Imposition">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="impositionType" type="xsd:string" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="InvoiceTextCodes">
+       <xsd:annotation>
+           <xsd:documentation>
+               This type maps to Tax response Invoice Text Codes.
+           </xsd:documentation>
+       </xsd:annotation>
+       <xsd:sequence>
+           <xsd:element name="InvoiceTextCode" type="xsd:string" maxOccurs="unbounded"/>
+       </xsd:sequence>
+   </xsd:complexType>
+
+    <xsd:complexType name="Jurisdiction">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="jurisdictionLevel" type="xsd:string" />
+                <xsd:attribute name="jurisdictionId" type="xsd:string" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Tax">
+        <xsd:sequence>
+            <xsd:element name="Situs" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The situs or taxing location as determined by the calculation engine for the line item.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Jurisdiction" type="Jurisdiction" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The name of jurisdiction to which a tax is applied.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Imposition" type="Imposition" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The name of the imposition to which the relevant tax rule belongs.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="EffectiveRate" type="xsd:decimal" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        For Buyer Input tax and Seller Import tax, this rate is calculated based on the Extended Price
+                        and Tax Amount (Import or Input) passed in the Request message.
+                        If you total the Extended Price and Tax Amounts before passing them in,
+                        this rate is an average.
+                        For all other message types, this is the effective rate the system used to calculate tax.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="TaxableAmount" type="AmountBaseType" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The amount for which tax is calculated.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ExemptAmount" type="AmountBaseType" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Amount of the line item not subject to tax due to exempt status.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="NonTaxableAmount" type="AmountBaseType" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Amount of the line item not subject to tax due to nontaxable status.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="CalculatedTax" type="AmountBaseType" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Amount of tax calculated by the calculation engine.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="SellerRegistrationId" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The Registration ID for the Seller associated with this line item tax.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="InvoiceTextCodes" type="InvoiceTextCodes" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="taxType" type="TaxType"/>
+        <xsd:attribute name="taxability" type="Taxability"/>
+    </xsd:complexType>
+
+    <xsd:simpleType name="Taxability">
+        <xsd:annotation>
+            <xsd:documentation>
+                System determination of taxable status based on situs and item type.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="TAXABLE"/>
+            <xsd:enumeration value="NONTAXABLE"/>
+            <xsd:enumeration value="EXEMPT"/>
+            <xsd:enumeration value="DPPAPPLIED"/>
+            <xsd:enumeration value="NO_TAX"/>
+            <xsd:enumeration value="DEFERRED"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="TaxData">
+        <xsd:sequence>
+            <xsd:element name="TaxClass" type="xsd:string" minOccurs="0">
+                 <xsd:annotation>
+                    <xsd:documentation>
+                       This type represents class for Tax calculation purposes. Typically the default tax class for shipping is 93000.
+                    </xsd:documentation>
+                 </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Taxes" type="TaxGroup" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+
+    <xsd:complexType name="TaxGroup">
+        <xsd:sequence>
+            <xsd:element name="Tax" type="Tax" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="TaxType">
+        <xsd:annotation>
+            <xsd:documentation>
+                System determined tax type, based on situs, transaction type, and party role type (perspective).
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="SALES"/>
+            <xsd:enumeration value="SELLER_USE"/>
+            <xsd:enumeration value="CONSUMERS_USE"/>
+            <xsd:enumeration value="VAT"/>
+            <xsd:enumeration value="IMPORT_VAT"/>
+            <xsd:enumeration value="NONE"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+</xsd:schema>

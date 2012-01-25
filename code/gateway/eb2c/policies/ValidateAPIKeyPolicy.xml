@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sci:Policy xmlns:http="http://www.sonoasystems.com/schemas/2007/8/3/http/" xmlns:sci="http://www.sonoasystems.com/schemas/2007/8/3/sci/" name="ValidateAPIKeyPolicy">
+  <sci:MessageVariables>
+    <sci:MessageXPathGroup name="__system_generated__APIKeyValidation">
+      <sci:MessageXPath name="AuthenticationSuccess" type="string" xpathwhere="raw">
+        <sci:NamespaceGroupRef ref="standard.namespaces"/>
+        <sci:XPath>/consumer/status</sci:XPath>
+      </sci:MessageXPath>
+      <sci:MessageXPath name="serviceprofile" type="string" xpathwhere="raw">
+        <sci:NamespaceGroupRef ref="standard.namespaces"/>
+        <sci:XPath>/consumer/serviceprofile</sci:XPath>
+      </sci:MessageXPath>
+      <sci:MessageXPath name="loginID" type="string" xpathwhere="raw">
+        <sci:NamespaceGroupRef ref="standard.namespaces"/>
+        <sci:XPath>/consumer/loginid</sci:XPath>
+      </sci:MessageXPath>
+      <sci:MessageXPath name="Xkey" type="string" xpathwhere="raw">
+        <sci:XPath>/consumer/key</sci:XPath>
+      </sci:MessageXPath>
+    </sci:MessageXPathGroup>
+  </sci:MessageVariables>
+  <sci:FlowVariables>
+    <sci:Variable name="APIKey" scope="global" type="string" value=""/>
+    <sci:Variable name="authSuccess" scope="global" type="string" value="false"/>
+    <sci:Variable name="login-id" scope="global" type="string" value=""/>
+    <sci:Variable name="service-profile" scope="global" type="string" value=""/>
+  </sci:FlowVariables>
+  <sci:Conditions>
+    <sci:IsNullCondition name="APIKeyNull" operand1="APIKey"/>
+    <sci:EqualsCondition name="AuthenticationSuccessCondition" operand1="authSuccess" operand2Value="true"/>
+    <sci:NotCondition name="unSuccessfulAuthentication" operand1="AuthenticationSuccessCondition"/>
+    <sci:NotCondition name="APIKeyNotNull" operand1="APIKeyNull"/>
+  </sci:Conditions>
+  <extractvariables:ExtractVariables xmlns:extractvariables="http://www.sonoasystems.com/schemas/2007/8/3/extractvariables/" name="ExtractApiKeyFromHeader">
+    <extractvariables:Assign variableName="APIKey">
+      <extractvariables:Variable ref="_transportvar.apikey"/>
+    </extractvariables:Assign>
+  </extractvariables:ExtractVariables>
+  <extractvariables:ExtractVariables xmlns:extractvariables="http://www.sonoasystems.com/schemas/2007/8/3/extractvariables/" name="ExtractApiKeyFromParam">
+    <sci:ConditionRef ref="APIKeyNull"/>
+    <extractvariables:Assign variableName="APIKey">
+      <extractvariables:Variable ref="_transportvar.queryparam.apikey"/>
+    </extractvariables:Assign>
+  </extractvariables:ExtractVariables>
+  <sci:RaiseFault name="UnAuthorized">
+    <sci:ConditionRef ref="APIKeyNull"/>
+  </sci:RaiseFault>
+  <sci:ServiceCallout name="APIKeyValidation" continueOnError="true">
+    <sci:Endpoint type="rest">
+      <http:TargetAddress>
+        <http:Local>
+          <http:ApplicationRef>KMSAPIProxy</http:ApplicationRef>
+          <http:ServiceRef>KeyManagementService</http:ServiceRef>
+          <http:ClientEndpointRef>KeyManagementService_client</http:ClientEndpointRef>
+          <http:PathParameters>/consumer/clientapp/key/validate</http:PathParameters>
+        </http:Local>
+        <http:TransportBinding>
+          <http:AllowHttp10>true</http:AllowHttp10>
+          <http:AllowHttp11>true</http:AllowHttp11>
+          <http:KeepAliveConnections>true</http:KeepAliveConnections>
+          <http:RetainHeaders>true</http:RetainHeaders>
+          <http:RetainQueryParams>true</http:RetainQueryParams>
+          <http:Compression/>
+          <http:Decompression/>
+        </http:TransportBinding>
+      </http:TargetAddress>
+      <sci:Metadata/>
+    </sci:Endpoint>
+    <sci:Request>
+      <sci:Payload/>
+      <sci:Assign sourceval="GET" type="verb"/>
+      <sci:Assign sourceref="APIKey" targetval="key" type="queryparam"/>
+    </sci:Request>
+    <sci:Response>
+      <sci:Evaluate messageXPathGroupRef="__system_generated__APIKeyValidation"/>
+      <sci:Extract sourceref="serviceprofile" targetref="service-profile" type="var"/>
+      <sci:Extract sourceref="AuthenticationSuccess" targetref="authSuccess" type="var"/>
+      <sci:Extract sourceref="loginID" targetref="login-id" type="var"/>
+      <sci:Extract sourceref="Xkey" targetref="key" type="var"/>
+    </sci:Response>
+  </sci:ServiceCallout>
+  <sci:RaiseFault name="AuthFail">
+    <sci:ConditionRef ref="unSuccessfulAuthentication"/>
+  </sci:RaiseFault>
+  <extractvariables:ExtractVariables xmlns:extractvariables="http://www.sonoasystems.com/schemas/2007/8/3/extractvariables/" name="assignProfileVariables">
+    <extractvariables:Assign variableName="serviceClass">
+      <extractvariables:Variable ref="service-profile"/>
+    </extractvariables:Assign>
+    <extractvariables:Assign variableName="loginid">
+      <extractvariables:Variable ref="login-id"/>
+    </extractvariables:Assign>
+  </extractvariables:ExtractVariables>
+  <sci:FaultHandling>
+    <sci:Fault faultName="AuthFail">
+      <sci:AssignPayload name="assignPayload1">
+        <sci:CustomPayload autogen-envelopes="false">
+          <sci:GenericPayloadAttributes>
+            <sci:ContentType>application/xml</sci:ContentType>
+            <sci:ResponseCode>401</sci:ResponseCode>
+          </sci:GenericPayloadAttributes>
+          <sci:Template>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>
+&lt;fault>
+	&lt;code>401&lt;/code>
+	&lt;message>UnAuthorized&lt;/message>
+&lt;/fault></sci:Template>
+        </sci:CustomPayload>
+      </sci:AssignPayload>
+    </sci:Fault>
+    <sci:Fault faultName="UnAuthorized">
+      <sci:AssignPayload name="assignPayload1">
+        <sci:CustomPayload autogen-envelopes="false">
+          <sci:GenericPayloadAttributes>
+            <sci:ContentType>application/xml</sci:ContentType>
+            <sci:ResponseCode>401</sci:ResponseCode>
+          </sci:GenericPayloadAttributes>
+          <sci:Template>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>
+&lt;fault>
+	&lt;code>401&lt;/code>
+	&lt;message>UnAuthorized&lt;/message>
+&lt;/fault></sci:Template>
+        </sci:CustomPayload>
+      </sci:AssignPayload>
+    </sci:Fault>
+  </sci:FaultHandling>
+</sci:Policy>

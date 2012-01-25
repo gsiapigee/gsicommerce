@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sci:Policy xmlns:con="http://www.sonoasystems.com/schemas/2007/8/3/soi/config/" xmlns:sci="http://www.sonoasystems.com/schemas/2007/8/3/sci/" xmlns="http://www.sonoasystems.com/schemas/2007/8/3/sci/" xmlns:sfunctions="http://www.sonoasystems.com/schemas/2007/8/3/sfunctions/" enabled="true" name="AddAuthorizationHeaderPolicy">
+  <sci:Variables>
+    <sci:Variable encryptionType="plaintext" isSecure="false" name="KMSUsername" type="string" value="apigee"/>
+    <sci:Variable encryptionType="plaintext" isSecure="false" name="KMSPassword" type="string" value="apigee123"/>
+  </sci:Variables>
+  <sci:ProtocolTransformation name="protocolTransformation1" continueOnError="true">
+    <sci:HeaderTransforms>
+      <sci:Delete name="Authorization"/>
+    </sci:HeaderTransforms>
+  </sci:ProtocolTransformation>
+  <sci:Pipeline name="CreateBasicHeader">
+    <sci:Step>
+      <sci:Command cmdType="sonoa:primitives:sfunctionscomponent" continueOnError="true" name="CreateBasicAuthHeader">
+        <sci:CommandBody type="text/xml">
+          <sfunctions:SFunctions>
+            <sfunctions:Assign>
+              <sfunctions:Lhs>_transportvar.Authorization</sfunctions:Lhs>
+              <sfunctions:Rhs>
+                <sfunctions:Concatenate delimiter=" ">
+                  <sfunctions:Argument value="Basic"/>
+                  <sfunctions:Argument>
+                    <sfunctions:Base64Encode>
+                      <sfunctions:Source>
+                        <sfunctions:Concatenate delimiter=":">
+                          <sfunctions:Argument valueRef="KMSUsername"/>
+                          <sfunctions:Argument valueRef="KMSPassword"/>
+                        </sfunctions:Concatenate>
+                      </sfunctions:Source>
+                    </sfunctions:Base64Encode>
+                  </sfunctions:Argument>
+                </sfunctions:Concatenate>
+              </sfunctions:Rhs>
+            </sfunctions:Assign>
+          </sfunctions:SFunctions>
+        </sci:CommandBody>
+      </sci:Command>
+    </sci:Step>
+  </sci:Pipeline>
+</sci:Policy>

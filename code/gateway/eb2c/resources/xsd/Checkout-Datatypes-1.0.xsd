@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified" attributeFormDefault="unqualified"
+            targetNamespace="http://api.gsicommerce.com/schema/checkout/1.0"
+            xmlns="http://api.gsicommerce.com/schema/checkout/1.0"
+            version="1.0">
+
+    <xsd:simpleType name="AmountBaseType">
+        <xsd:restriction base="xsd:decimal">
+            <xsd:fractionDigits value="2"/>
+            <xsd:minInclusive value="0"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="ItemId">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Represents the identifier for an inventory product.  a.k.a. SKU
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="20"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="EmailAddress">
+        <xsd:annotation>
+            <xsd:documentation>
+                Email address.
+            </xsd:documentation>
+        </xsd:annotation>
+        
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="([a-zA-Z0-9_\-])([a-zA-Z0-9_\-\.]*)@(\[((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}|((([a-zA-Z0-9\-]+)\.)+))([a-zA-Z]{2,}|(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\])"/>
+            <xsd:maxLength value="70"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="IPv4Address">
+        <xsd:annotation>
+            <xsd:documentation>
+                IPv4 address in the dotted-decimal notation.
+            </xsd:documentation>
+        </xsd:annotation>
+        
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="AddressLineType">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="70"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="PhysicalAddressType">
+        <xsd:sequence>
+            <xsd:element name="Line1" type="AddressLineType">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The address line 1 field
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Line2" type="AddressLineType" minOccurs="0"/>
+            <xsd:element name="Line3" type="AddressLineType" minOccurs="0"/>
+            <xsd:element name="Line4" type="AddressLineType" minOccurs="0"/>
+            <xsd:element name="City" >
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The city in the address
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="35"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="MainDivision" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Top level subdivision within a country (ex: State/Provence, Counties in England, etc.)
+                        In countries where available, send the two or three-digit postal abbreviation for
+                        the state or province (See ISO 3166-2 ).
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="35"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="CountryCode" >
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Two digit ISO country code conforming to ISO 3166 alpha 2.
+                        See: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="40"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="PostalCode" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                           The zip code in the address
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="15"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="PersonNameType">
+        <xsd:sequence>
+            <xsd:element name="Honorific" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The title for the person such as Ms., Mr., or Dr..
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="10"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="LastName" >
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The last name of the person.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="64"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="MiddleName" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The middle name or initial of the person.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="40"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="FirstName">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The first name of the person.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="64"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="RequestId">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                RequestId is used to globally identify a request message and is used
+                for duplicate request protection.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1" />
+            <xsd:maxLength value="40" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="ReservationId">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Identifier for an available to promise inventory reservation.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1" />
+            <xsd:maxLength value="40" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="DateRange">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                A range of dates where From is earlier than To.
+                Used, for example, to represent an estimated delivery date range.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="From" type="xsd:date" />
+            <xsd:element name="To" type="xsd:date" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="CarrierType">
+        <xsd:simpleContent>
+            <xsd:annotation>
+                <xsd:documentation>
+                    Shipping Carrier such as "UPS" or "FEDEX"
+                    Carrier mode is such as 1Day or Ground, etc.
+
+                    Represents the
+                    logical Carriers (SCAC) and modes (CarrierServiceCode)
+                </xsd:documentation>
+            </xsd:annotation>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="mode" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+
+    </xsd:complexType>
+
+</xsd:schema>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sci:Policy xmlns:editor="http://www.sonoasystems.com/schemas/2007/8/3/ui/policy/editor/" xmlns:sci="http://www.sonoasystems.com/schemas/2007/8/3/sci/" xmlns:assrt="http://www.sonoasystems.com/schemas/2007/8/3/sci/" xmlns:template="http://www.sonoasystems.com/schemas/2007/8/3/ui/policy/template/" name="XML2JSON">
+  <sci:Metadata>
+    <template:UIMetadata>
+      <template:TemplateIdentifier category="Messaging" displayName="XML To JSON Conversion" editor="GenericEditor" ignoreForDomain="true" majorVersion="3" name="XML2JSON" onlyForDomain="false" subcategory="Format Conversion" version="1"/>
+    </template:UIMetadata>
+    <editor:Parameters>
+      <editor:Parameter name="RecognizeNumber" value="true"/>
+      <editor:Parameter name="NullEquivalent" value="NULL"/>
+      <editor:Parameter name="SuppressNamespacePrefix" value="true"/>
+      <editor:Parameter name="NamespaceSeparator" value=":"/>
+      <editor:Parameter name="TextNodeName" value="#text"/>
+      <editor:Parameter name="AttributeBlockName" value=""/>
+      <editor:Parameter name="AttributePrefix" value="@"/>
+      <editor:Parameter name="OutputPrefix" value=""/>
+      <editor:Parameter name="OutputSuffix" value=""/>
+      <editor:Parameter name="SystemError" value="true"/>
+      <editor:Parameter name="CustomError" value="false"/>
+    </editor:Parameters>
+  </sci:Metadata>
+  <sci:EnforcementPoint>ClientResponse-System</sci:EnforcementPoint>
+  <sci:Conditions>
+    <sci:EqualsCondition name="Isjson" operand1="_flow.msgvar.format" operand2Value="json"/>
+  </sci:Conditions>
+  <sci:PolicyCondition ref="Isjson"/>
+  <sci:XMLtoJSON name="XML2JSON">
+    <sci:Description></sci:Description>
+    <sci:RecognizeNumber>true</sci:RecognizeNumber>
+    <sci:NullEquivalent>NULL</sci:NullEquivalent>
+    <sci:SuppressNamespacePrefix>true</sci:SuppressNamespacePrefix>
+    <sci:NamespaceSeparator>:</sci:NamespaceSeparator>
+    <sci:TextAlwaysToProperty>false</sci:TextAlwaysToProperty>
+    <sci:TextNodeName>#text</sci:TextNodeName>
+    <sci:AttributeBlockName></sci:AttributeBlockName>
+    <sci:AttributePrefix>@</sci:AttributePrefix>
+    <sci:OutputPrefix></sci:OutputPrefix>
+    <sci:OutputSuffix></sci:OutputSuffix>
+  </sci:XMLtoJSON>
+</sci:Policy>

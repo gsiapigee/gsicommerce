@@ -1,0 +1,17 @@
+dev:
+  description: Dev box  Automation
+  target_endpoints:
+     ebc2_target:
+       uri: http://172.21.241.12:1401/public-api-service
+
+qa:
+  description: QA box  Automation
+  target_endpoints:
+     ebc2_target:
+       uri: http://172.21.241.12:1401/public-api-service
+
+apigee:
+  description: Apigee Cloud Automation
+  target_endpoints:
+     ebc2_target:
+       uri: http://www.google.com

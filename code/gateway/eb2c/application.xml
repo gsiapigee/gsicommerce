@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sci:Application xmlns:sci="http://www.sonoasystems.com/schemas/2007/8/3/sci/" name="eb2c">
+  <sci:ConfigurationVersion majorVersion="5" minorVersion="0"/>
+  <sci:NamespaceGroups>
+    <sci:NamespaceGroup name="standard.namespaces">
+      <sci:Namespace prefix="xsi">http://www.w3.org/2001/XMLSchema-instance</sci:Namespace>
+      <sci:Namespace prefix="wsdl">http://schemas.xmlsoap.org/wsdl</sci:Namespace>
+      <sci:Namespace prefix="soap">http://www.sonoasystems.com/schemas/2006/02/wsdl/soap/</sci:Namespace>
+      <sci:Namespace prefix="soap11env">http://schemas.xmlsoap.org/soap/envelope/</sci:Namespace>
+      <sci:Namespace prefix="soap12env">http://www.w3.org/2003/05/soap-envelope</sci:Namespace>
+    </sci:NamespaceGroup>
+  </sci:NamespaceGroups>
+  <sci:FlowVariables>
+    <sci:Variable name="address" scope="global" type="string" value=""/>
+    <sci:Variable name="postalcode" scope="global" type="string" value=""/>
+    <sci:Variable name="loginid" scope="global" type="string" value=""/>
+    <sci:Variable name="serviceClass" scope="global" type="string" value=""/>
+    <sci:Variable name="key" scope="global" type="string" value=""/>
+    <sci:Variable name="gsi-allowed-stores" scope="global" type="string" value=""/>
+    <sci:Variable name="allowed-uri" scope="global" type="string" value=""/>
+  </sci:FlowVariables>
+  <sci:MessageStatistics>enabled</sci:MessageStatistics>
+  <sci:Reporting>enabled</sci:Reporting>
+  <sci:PolicyStatistics>enabled</sci:PolicyStatistics>
+  <sci:PolicyAttachments>
+    <sci:PolicyAttachment policySetName="APIThreatProtection"/>
+    <sci:PolicyAttachment enforcementPoint="ClientRequest-User" policyName="ValidateAPIKeyPolicy"/>
+    <sci:PolicyAttachment enforcementPoint="ClientRequest-User" policyName="ValidateVersionPolicy"/>
+  </sci:PolicyAttachments>
+</sci:Application>

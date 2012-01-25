@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified" attributeFormDefault="unqualified"
+  targetNamespace="http://api.gsicommerce.com/schema/checkout/1.0"
+  xmlns="http://api.gsicommerce.com/schema/checkout/1.0"
+  version="1.0" >
+
+<xsd:include schemaLocation="Payment-Datatypes-1.0.xsd"/>
+
+<xsd:complexType name="PayPalDoVoidRequestType" >
+  <xsd:sequence>
+    <xsd:element name="OrderId" type="OrderIdType"/>
+    <xsd:element name="CurrencyCode" type="ISOCurrencyCodeType" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="PayPalDoVoidRequest" type="PayPalDoVoidRequestType" />
+
+<xsd:complexType name="PayPalDoVoidReplyType" >
+  <xsd:sequence>
+    <xsd:element name="OrderId" type="OrderIdType"/>
+    <xsd:element name="ResponseCode" type="SuccessFailResponseCodeType" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="PayPalDoVoidReply" type="PayPalDoVoidReplyType" />
+
+</xsd:schema>

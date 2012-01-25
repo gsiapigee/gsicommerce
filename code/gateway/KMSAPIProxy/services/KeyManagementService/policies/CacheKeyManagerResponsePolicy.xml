@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sci:Policy xmlns:sci="http://www.sonoasystems.com/schemas/2007/8/3/sci/" enabled="false" name="CacheKeyManagerResponsePolicy">
+  <sci:Variables>
+    <sci:Variable encryptionType="plaintext" isSecure="false" name="keyManagementServiceCacheTimeOut" type="integer" value="1200"/>
+  </sci:Variables>
+  <sci:Conditions>
+    <sci:IsNullCondition name="IsCacheKeyNull" operand1="_flow.client.request.queryparam.cachekey"/>
+    <sci:NotCondition name="IsCacheKeyPresent" operand1="IsCacheKeyNull"/>
+  </sci:Conditions>
+  <sci:PolicyCondition ref="IsCacheKeyPresent"/>
+  <sci:ResponseCache name="KeyManagementServiceCache" responseCacheResourceRef="devKeyCache">
+    <sci:CacheKey responseCacheKeyScope="operation" useImplicitNamespaceForCacheKeys="true">
+      <sci:Parameter ref="_flow.client.request.uriwithqueryparams"/>
+    </sci:CacheKey>
+    <sci:CacheExpiry>
+      <sci:TimeoutInSecs default="120" ref="keyManagementServiceCacheTimeOut"/>
+    </sci:CacheExpiry>
+  </sci:ResponseCache>
+</sci:Policy>

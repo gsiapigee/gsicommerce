@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sci:Policy xmlns:sci="http://www.sonoasystems.com/schemas/2007/8/3/sci/" xmlns:xpathreeval="http://www.sonoasystems.com/schemas/2007/8/3/xpathreeval/" name="EvaluateRequestPolicy">
+  <sci:MessageVariables>
+    <sci:MessageXPath name="AddressLine1" type="string" xpathwhere="raw">
+      <sci:Namespace prefix="Addr">http://api.gsicommerce.com/schema/checkout/1.0</sci:Namespace>
+      <sci:NamespaceGroupRef ref="standard.namespaces"/>
+      <sci:XPath>/Addr:AddressValidationRequest/Addr:Address/Addr:Line1</sci:XPath>
+    </sci:MessageXPath>
+    <sci:MessageXPath name="postalcodeXPath" type="string" xpathwhere="raw">
+      <sci:Namespace prefix="Addr">http://api.gsicommerce.com/schema/checkout/1.0</sci:Namespace>
+      <sci:NamespaceGroupRef ref="standard.namespaces"/>
+      <sci:XPath>/Addr:AddressValidationRequest/Addr:Address/Addr:PostalCode</sci:XPath>
+    </sci:MessageXPath>
+  </sci:MessageVariables>
+  <sci:MessageValidation name="messageValidation">
+    <sci:WellFormedness>true</sci:WellFormedness>
+    <sci:Schema>
+      <sci:XSD>resource://xsd/Address-Validation-Service-1.0.xsd</sci:XSD>
+    </sci:Schema>
+  </sci:MessageValidation>
+  <xpathreeval:XpathReEvaluate name="xpathReEvaluate1">
+    <xpathreeval:XpathGroup>_default_</xpathreeval:XpathGroup>
+  </xpathreeval:XpathReEvaluate>
+  <extractvariables:ExtractVariables xmlns:extractvariables="http://www.sonoasystems.com/schemas/2007/8/3/extractvariables/" name="assignVariables">
+    <extractvariables:Assign variableName="address">
+      <extractvariables:Variable ref="AddressLine1"/>
+    </extractvariables:Assign>
+    <extractvariables:Assign variableName="postalcode">
+      <extractvariables:Variable ref="postalcodeXPath"/>
+    </extractvariables:Assign>
+  </extractvariables:ExtractVariables>
+  <sci:FaultHandling>
+    <sci:Fault faultName="SchemaValidationError">
+      <sci:AssignPayload name="assignPayload1">
+        <sci:FaultPayload>
+          <sci:GenericFault>
+            <sci:GenericPayloadAttributes>
+              <sci:ContentType>application/xml</sci:ContentType>
+              <sci:ResponseCode>500</sci:ResponseCode>
+            </sci:GenericPayloadAttributes>
+            <sci:FaultCode>Server/Receiver</sci:FaultCode>
+            <sci:FaultDescription>Schema Validation</sci:FaultDescription>
+            <sci:FaultDetail>XML is not Valid</sci:FaultDetail>
+          </sci:GenericFault>
+        </sci:FaultPayload>
+      </sci:AssignPayload>
+    </sci:Fault>
+    <sci:Fault faultName="_default">
+      <sci:AssignPayload name="assignPayload1">
+        <sci:FaultPayload>
+          <sci:GenericFault>
+            <sci:GenericPayloadAttributes>
+              <sci:ContentType>application/xml</sci:ContentType>
+              <sci:ResponseCode>500</sci:ResponseCode>
+            </sci:GenericPayloadAttributes>
+            <sci:FaultCode>Server/Receiver</sci:FaultCode>
+            <sci:FaultDescription>Schema Validation</sci:FaultDescription>
+            <sci:FaultDetail>XML is not Valid</sci:FaultDetail>
+          </sci:GenericFault>
+        </sci:FaultPayload>
+      </sci:AssignPayload>
+    </sci:Fault>
+  </sci:FaultHandling>
+</sci:Policy>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sci:Service xmlns:con="http://www.sonoasystems.com/schemas/2007/8/3/soi/config/" xmlns:http_1="http://www.sonoasystems.com/schemas/2007/8/3/http/" xmlns="http://www.sonoasystems.com/schemas/2007/8/3/http/" xmlns:sci="http://www.sonoasystems.com/schemas/2007/8/3/sci/" name="KeyManagementService">
+  <sci:Metadata>
+    <sci:PropertyMetadataSection>
+      <sci:Property name="SmartProxy" value="true"/>
+    </sci:PropertyMetadataSection>
+  </sci:Metadata>
+  <sci:Binding name="KMSClientBinding" type="http://schemas.xmlsoap.org/wsdl/http/">
+    <http:binding xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" verb="ANY"/>
+    <sci:Operation name="defaultOperation">
+      <http_1:operation location="" verb="ANY"/>
+    </sci:Operation>
+  </sci:Binding>
+  <sci:Binding name="KMSTargetBinding" type="http://schemas.xmlsoap.org/wsdl/http/">
+    <http:binding xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" verb="ANY"/>
+    <sci:Operation name="defaultOperation">
+      <http_1:operation location="${_flow.client.request.pathsuffix}${_flow.client.request.queryparam2}" verb="${_flow.client.request.verb}"/>
+    </sci:Operation>
+  </sci:Binding>
+  <sci:ClientEndpoint binding="KMSClientBinding" name="KeyManagementService_client">
+    <sci:MessageStatistics>enabled</sci:MessageStatistics>
+    <sci:PolicyStatistics>enabled</sci:PolicyStatistics>
+    <sci:Metadata>
+      <sci:PropertyMetadataSection>
+        <sci:Property name="PassthroughWSDLRequests" value="true"/>
+      </sci:PropertyMetadataSection>
+    </sci:Metadata>
+    <http_1:ClientAddress>
+      <http_1:VirtualHost ref="VirtualHost_80"/>
+      <http_1:Path>/KeyManager</http_1:Path>
+      <http_1:TransportBinding>
+        <http_1:AllowHttp10>true</http_1:AllowHttp10>
+        <http_1:AllowHttp11>true</http_1:AllowHttp11>
+        <http_1:KeepAliveConnections>true</http_1:KeepAliveConnections>
+        <http_1:RetainHeaders>true</http_1:RetainHeaders>
+      </http_1:TransportBinding>
+    </http_1:ClientAddress>
+    <sci:Operation mep="http://www.w3.org/2006/01/wsdl/in-out" name="defaultOperation">
+      <http_1:ClassificationMethod>
+        <http_1:NoneNeeded/>
+      </http_1:ClassificationMethod>
+      <sci:MessageStatistics>enabled</sci:MessageStatistics>
+      <sci:PolicyStatistics>enabled</sci:PolicyStatistics>
+      <sci:Route>
+        <sci:TargetEndpointRef ref="KMSTarget" operation="defaultOperation"/>
+      </sci:Route>
+    </sci:Operation>
+  </sci:ClientEndpoint>
+  <sci:TargetEndpoint binding="KMSTargetBinding" name="KMSTarget">
+    <sci:MessageStatistics>enabled</sci:MessageStatistics>
+    <sci:PolicyStatistics>enabled</sci:PolicyStatistics>
+    <sci:PolicyAttachments>
+      <sci:PolicyAttachment enforcementPoint="TargetResponse-System" policyName="CacheKeyManagerResponsePolicy"/>
+      <sci:PolicyAttachment enforcementPoint="TargetRequest-User" policyName="AddAuthorizationHeaderPolicy"/>
+    </sci:PolicyAttachments>
+    <http_1:TargetAddress xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <http_1:URI>http://172.21.241.218:8080</http_1:URI>
+      <http_1:TransportBinding>
+        <http_1:AllowHttp10>true</http_1:AllowHttp10>
+        <http_1:AllowHttp11>true</http_1:AllowHttp11>
+        <http_1:KeepAliveConnections>true</http_1:KeepAliveConnections>
+        <http_1:RetainHeaders>true</http_1:RetainHeaders>
+        <http_1:RetainQueryParams>true</http_1:RetainQueryParams>
+      </http_1:TransportBinding>
+    </http_1:TargetAddress>
+    <sci:Operation mep="http://www.w3.org/2006/01/wsdl/in-out" name="defaultOperation">
+      <sci:MessageStatistics>enabled</sci:MessageStatistics>
+      <sci:PolicyStatistics>enabled</sci:PolicyStatistics>
+    </sci:Operation>
+  </sci:TargetEndpoint>
+</sci:Service>

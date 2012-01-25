@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://api.gsicommerce.com/schema/checkout/1.0" targetNamespace="http://api.gsicommerce.com/schema/checkout/1.0"
+    elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <xsd:include schemaLocation="Inventory-Datatypes-1.0.xsd" />
+
+  <xsd:complexType name="QuantityRequestMessage">
+    <xsd:annotation>
+      <xsd:documentation>
+      <p>
+      Quantity API is used to check available to promise inventory for one or
+      more items. Default is fulfillment center ATP inventory for the item, 
+      but an item request can be qualified by store ID to get in-store ATP 
+      inventory for the item at a specific store location.
+      </p>
+      <p>
+      Prescribed API usage:
+      <ul>
+      <li>add to cart</li>
+      <li>update quantity in cart</li>
+      <li>move from wish list to cart</li>
+      <li>restoring cart from persistent storage</li>
+      </ul>
+      </p>
+      <p>
+      A quantity request message consists of a list of one or more quantity 
+      request lines each of which in turn consists of an item identifier,
+      a line identifier used to correlate request lines with response lines and
+      and optional store identifier for in store pickup lines.
+      </p>
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="QuantityRequest" type="QuantityRequest" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="QuantityRequestMessage" type="QuantityRequestMessage"
+               nillable="false" />
+
+  <xsd:complexType name="QuantityRequest">
+    <xsd:attribute name="lineId" type="xsd:string" use="required" />
+    <xsd:attribute name="itemId" type="ItemId" use="required" />
+  </xsd:complexType>
+
+  <xsd:element name="QuantityResponseMessage">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="en">
+      This type defines the syntax of a response message for the EB2C inventory
+      quantity operation.  A quantity response message consists of a list of one 
+      or more quantity response lines each in turn consisting of an item 
+      identifier, a line identifier used to correlate response lines with request
+      lines and a quantity value.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="QuantityResponse" type="QuantityResponse"
+                     maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:complexType name="QuantityResponse">
+    <xsd:sequence>
+      <xsd:element name="Quantity" type="xsd:int"/>
+    </xsd:sequence>
+    <xsd:attribute name="lineId" type="xsd:string" use="required"/>
+    <xsd:attribute name="itemId" type="ItemId" use="required"/>
+  </xsd:complexType>
+
+</xsd:schema>
